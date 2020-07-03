@@ -15,8 +15,8 @@ class SpaceAdventure {
   }
 
   void printGreeting() {
-    print('Welcome to the ${planetarySystem.name}!\n'
-        'There are 8 planets to explore.');
+    print('Welcome to the ${planetarySystem.systemName}!\n'
+        'There are ${planetarySystem.getNumPlanets()} planets to explore.');
   }
 
   void printIntroduction(String name) {
@@ -29,19 +29,18 @@ class SpaceAdventure {
     return stdin.readLineSync();
   }
 
-  void travelToRandomPlanet() {
-    print('Ok! Traveling to Mercury...\n'
-        'Arrived at Mercury. A very hot planet, closest to the sun.');
-  }
-
-  void travelTo(String planetName) {
-    print('Traveling to $planetName...\n'
-        'Arrived at $planetName. A very cold planet, furthest from the sun.');
+  void travelTo([String planetName]) {
+    if (planetarySystem.setPlanet(planetName)) {
+      print('Ok! Traveling to ${planetarySystem.getPlanetName()}...\n'
+          'Arrived at ${planetarySystem.getPlanetName()}. ${planetarySystem.getPlanetDescription()}');
+    } else {
+      print('You must be thinking of another planetary system...');
+    }
   }
 
   void travel(bool isRandomDestination) {
     if (isRandomDestination) {
-      travelToRandomPlanet();
+      travelTo();
     } else {
       travelTo(responseToPrompt('Name the planet you would like to visit.'));
     }

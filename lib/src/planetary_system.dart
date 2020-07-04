@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:json_annotation/json_annotation.dart';
+import './planet.dart';
 
 part 'planetary_system.g.dart';
 
@@ -9,38 +10,36 @@ class PlanetarySystem {
   static const KEY_NAME = 'name';
   static const KEY_PLANETS = 'planets';
 
+  final Random _random = Random();
   final String name;
-  final List<dynamic> planets;
-  int numPlanets;
-  Map selectedPlanet;
+  final List<Planet> planets;
+  Planet selectedPlanet;
 
-  PlanetarySystem({this.name, this.planets});
+  PlanetarySystem({this.name = 'Unnamed System', this.planets = const []});
 
   factory PlanetarySystem.fromJson(Map<String, dynamic> json) =>
       _$PlanetarySystemFromJson(json);
 
   Map<String, dynamic> toJson() => _$PlanetarySystemToJson(this);
 
-  int getNumPlanets() {
-    numPlanets ??= planets.length;
-    return numPlanets;
+  int get numPlanets => planets.length;
+
+  set numPlanets(int numPlanets) => numPlanets = numPlanets;
+
+  Planet getRandomPlanet() {
+    if (!hasPlanets) return Planet.nullPlanet();
+    return planets[_random.nextInt(numPlanets)];
   }
 
-  bool setPlanet([String planetName]) {
-    selectedPlanet = planetName == null
-        ? planets[Random().nextInt(getNumPlanets())]
-        : planets.firstWhere(
-            (planet) =>
-                planet[KEY_NAME].toLowerCase() == planetName.toLowerCase(),
-            orElse: () => {});
-    return selectedPlanet.isNotEmpty;
+  dynamic getPlanetWithName(String planetName) {
+    return planets.firstWhere(
+        (planet) => planet.name.toLowerCase() == planetName.toLowerCase(),
+        orElse: () => Planet.nullPlanet());
   }
 
-  String getPlanetName() {
-    return selectedPlanet[KEY_NAME];
-  }
+  String get planetName => selectedPlanet.name;
 
-  String getPlanetDescription() {
-    return selectedPlanet[KEY_DESCRIPTION];
-  }
+  String get planetDescription => selectedPlanet.description;
+
+  bool get hasPlanets => planets.isNotEmpty;
 }

@@ -1,19 +1,25 @@
 import 'dart:math';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'planetary_system.g.dart';
+
+@JsonSerializable()
 class PlanetarySystem {
   static const KEY_DESCRIPTION = 'description';
   static const KEY_NAME = 'name';
   static const KEY_PLANETS = 'planets';
 
-  String systemName;
-  List<dynamic> planets;
+  final String name;
+  final List<dynamic> planets;
   int numPlanets;
   Map selectedPlanet;
 
-  PlanetarySystem(Map<String, dynamic> systemData) {
-    systemName = systemData[KEY_NAME] ?? 'Unnamed System';
-    planets = systemData[KEY_PLANETS] ?? [];
-  }
+  PlanetarySystem({this.name, this.planets});
+
+  factory PlanetarySystem.fromJson(Map<String, dynamic> json) =>
+      _$PlanetarySystemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PlanetarySystemToJson(this);
 
   int getNumPlanets() {
     numPlanets ??= planets.length;
@@ -22,7 +28,7 @@ class PlanetarySystem {
 
   bool setPlanet([String planetName]) {
     selectedPlanet = planetName == null
-        ? planets[Random().nextInt(getNumPlanets() + 1)]
+        ? planets[Random().nextInt(getNumPlanets())]
         : planets.firstWhere(
             (planet) =>
                 planet[KEY_NAME].toLowerCase() == planetName.toLowerCase(),
